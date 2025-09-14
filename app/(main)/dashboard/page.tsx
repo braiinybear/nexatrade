@@ -1,16 +1,59 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Home, Wallet, LineChart, Briefcase } from "lucide-react";
+import { db } from "@/lib/firebase";
+import { useAuth } from "@/lib/hooks/useAuth";
+import { doc, onSnapshot } from "firebase/firestore";
+import Image from "next/image";
 
 export default function DashboardPage() {
+  const { user } = useAuth();
+  const [profile, setProfile] = useState<any>(null);
+
+  useEffect(() => {
+    if (!user) return;
+    const unsub = onSnapshot(doc(db, "users", user.uid), (snap) => {
+      if (snap.exists()) {
+        setProfile(snap.data());
+      }
+    });
+    return () => unsub();
+  }, [user]);
+
+  const balance = profile?.balance || 0;
+  const currency = profile?.currency || "USD";
+  const accountNumber = profile?.accountNumber || "------";
+
+  // Currency symbol mapping
+  const currencySymbols: Record<string, string> = {
+    USD: "$",
+    EUR: "€",
+    GBP: "£",
+    INR: "₹",
+    JPY: "¥",
+    RUB: "₽",
+    AUD: "A$",
+    CAD: "C$",
+    CNY: "¥",
+    NZD: "NZ$",
+    CHF: "Fr",
+    // Add more as needed
+  };
+  const currencySymbol = currencySymbols[currency] || "$";
+
   return (
     <div className="min-h-screen flex flex-col bg-white">
       {/* HEADER BALANCE SECTION */}
       <div className="bg-blue-600 text-white p-6 rounded-b-3xl">
         <div className="text-center">
-          <h1 className="text-4xl font-bold">$0.00</h1>
+          <h1 className="text-4xl font-bold flex items-center justify-center gap-2">
+            <span>{currencySymbol}</span>
+            <span>{balance.toFixed(2)}</span>
+            <span className="text-base font-normal text-blue-100">{currency}</span>
+          </h1>
+          <p className="mt-1 text-sm text-blue-100">Account #{accountNumber}</p>
         </div>
 
         {/* ACTION BUTTONS */}
@@ -55,6 +98,8 @@ export default function DashboardPage() {
               <Button variant="outline" size="sm">My rewards</Button>
             </div>
             <div className="mt-4 bg-blue-100 p-4 rounded-xl">
+              <Image src={""} alt="image" className="w-40 h-40" />
+
               <p className="font-medium">Unlock your welcome cashback reward</p>
               <Button className="mt-2 w-full bg-blue-600 text-white">Activate</Button>
             </div>
@@ -101,7 +146,6 @@ export default function DashboardPage() {
           </Card>
         </div>
       </div>
-
     </div>
   );
 }

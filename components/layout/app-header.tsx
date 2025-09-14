@@ -10,7 +10,7 @@ export function AppHeader({
   onMenuClick?: () => void;
 }) {
   return (
-    <header className="fixed top-0 left-0 right-0 h-14 bg-white border-b flex items-center px-4 z-30">
+    <header className="fixed top-0 left-0 right-0 h-14 bg-blue-600 flex items-center px-4 z-30">
       {/* Mobile toggle button */}
       <button
         className="md:hidden mr-3 p-2 rounded-md hover:bg-gray-100"

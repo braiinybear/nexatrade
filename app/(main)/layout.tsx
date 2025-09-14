@@ -8,9 +8,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       {/* Fixed header at top */}
       <HeaderWrapper />
 
-      <div className="flex min-h-screen pt-14"> 
-        {/* 👆 pt-14 pushes sidebar + content below fixed header */}
-
+      <div className="flex min-h-screen pt-14">
         {/* Desktop Sidebar */}
         <aside className="hidden md:flex w-64 border-r bg-white">
           <Sidebar desktop />
@@ -18,13 +16,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
         {/* Main content */}
         <div className="flex-1 flex flex-col">
-          <main className="flex-1">{children}</main>
+          {/* Add pb-16 on mobile to avoid overlap with bottom nav */}
+          <main className="flex-1 pb-16 md:pb-0">{children}</main>
         </div>
       </div>
 
-      {/* Bottom nav on mobile */}
-      <div className="sticky bottom-0 left-0 w-full border-t bg-white">
-        <BottomNav />
+      {/* Bottom nav: fixed on mobile, hidden on desktop */}
+      <div className="">
+        <div className="sticky bottom-0 left-0 w-full border-t bg-white z-50">
+          <BottomNav />
+        </div>
       </div>
     </>
   );
