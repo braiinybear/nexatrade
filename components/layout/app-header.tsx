@@ -1,6 +1,7 @@
 "use client";
 
 import { Menu } from "lucide-react";
+import Image from "next/image";
 
 export function AppHeader({
   title,
@@ -18,7 +19,8 @@ export function AppHeader({
       >
         <Menu className="h-6 w-6 text-gray-700" />
       </button>
-      <h1 className="text-lg font-semibold">{title}</h1>
+      <Image objectFit="cover" width={80} height={60} src={"https://octafx.my/wp-content/uploads/2024/07/octafx_logo_black.svg"} alt={title} />
+      {/* <h1 className="text-lg font-semibold">{title}</h1> */}
     </header>
   );
 }

@@ -26,6 +26,7 @@ type Profile = {
   photoURL?: string;
   accountNumber?: string;
   balance?: number;
+  currency?: string;
 };
 
 // ✅ Define props types for Sidebar
@@ -37,6 +38,21 @@ type SidebarProps = {
 };
 
 export function Sidebar({ desktop, mobile, open, onClose }: SidebarProps) {
+  // Currency symbol mapping
+  const currencySymbols: Record<string, string> = {
+    USD: "$",
+    EUR: "€",
+    GBP: "£",
+    INR: "₹",
+    JPY: "¥",
+    RUB: "₽",
+    AUD: "A$",
+    CAD: "C$",
+    CNY: "¥",
+    NZD: "NZ$",
+    CHF: "Fr",
+  };
+
   const { user } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [depositOpen, setDepositOpen] = useState(false);
@@ -86,7 +102,7 @@ export function Sidebar({ desktop, mobile, open, onClose }: SidebarProps) {
       {/* Nexa Rewards Banner */}
       <div className="m-4 rounded-lg border p-3 flex items-center justify-between">
         <div>
-          <p className="font-medium text-sm">Nexa Trade</p>
+          <p className="font-medium text-sm">OctaFx</p>
           <p className="text-xs text-gray-500">
             Trade. Earn XP. Unlock privileges.
           </p>
@@ -104,7 +120,7 @@ export function Sidebar({ desktop, mobile, open, onClose }: SidebarProps) {
           <span className="text-gray-400">▼</span>
         </div>
         <p className="text-sm text-gray-700 mt-1">
-          Balance: ${profile?.balance?.toFixed(2) ?? "0.00"}
+          Balance: {currencySymbols[profile?.currency ?? "USD"] || "$"}{profile?.balance?.toFixed(2) ?? "0.00"}
         </p>
         <div className="flex gap-2 mt-3">
           <button className="flex-1 py-2 rounded-lg bg-gray-100 text-sm font-medium">

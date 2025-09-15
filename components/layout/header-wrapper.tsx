@@ -17,7 +17,7 @@ export function HeaderWrapper() {
     // "/space": "Space",
   };
 
-  const title = pageTitleMap[pathname] || "Nexa Trade";
+  const title = pageTitleMap[pathname] || "OctaFx";
 
   return (
     <>

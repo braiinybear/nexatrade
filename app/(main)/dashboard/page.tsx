@@ -7,6 +7,12 @@ import { db } from "@/lib/firebase";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { doc, onSnapshot } from "firebase/firestore";
 import Image from "next/image";
+import {
+  CreditCard,
+  TrendingUp,
+  Wallet,
+  MoreHorizontal,
+} from "lucide-react";
 
 // ✅ Define proper type for user profile
 type UserProfile = {
@@ -68,17 +74,19 @@ export default function DashboardPage() {
 
         {/* ACTION BUTTONS */}
         <div className="flex justify-center gap-6 mt-6">
-          {["💳 Deposit", "📈 Trade", "💵 Withdraw", "⋯ More"].map((action) => {
-            const [emoji, label] = action.split(" ");
-            return (
-              <div key={label} className="flex flex-col items-center">
-                <div className="bg-white text-blue-600 p-4 rounded-full shadow">
-                  {emoji}
-                </div>
-                <p className="text-sm mt-2">{label}</p>
+          {[
+            { label: "Deposit", icon: CreditCard },
+            { label: "Trade", icon: TrendingUp },
+            { label: "Withdraw", icon: Wallet },
+            { label: "More", icon: MoreHorizontal },
+          ].map(({ label, icon: Icon }) => (
+            <div key={label} className="flex flex-col items-center">
+              <div className="bg-white text-blue-600 p-4 rounded-full shadow">
+                <Icon size={24} strokeWidth={2} />
               </div>
-            );
-          })}
+              <p className="text-sm mt-2">{label}</p>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -92,19 +100,17 @@ export default function DashboardPage() {
               <Button variant="outline" size="sm">My rewards</Button>
             </div>
             <div className="mt-4 bg-blue-100 p-4 rounded-xl">
-              {/* ❗ Replace with a real image path */}
-
               <div className="w-full justify-center items-center flex">
-              <p className="font-medium">Unlock your welcome cashback reward</p>
-              <div className="w-40 h-40 relative mb-2">
-                <Image
-                  src="/3d wallet.png"
-                  alt="Rewards image"
-                  layout="fill"
-                  objectFit="cover"
-                  className="rounded-lg"
-                />
-              </div>
+                <p className="font-medium">Unlock your welcome cashback reward</p>
+                <div className="w-40 h-40 relative mb-2">
+                  <Image
+                    src="/3d-wallet.png"
+                    alt="Rewards image"
+                    layout="fill"
+                    objectFit="cover"
+                    className="rounded-lg"
+                  />
+                </div>
               </div>
               <Button className="mt-2 w-full bg-blue-600 text-white">Activate</Button>
             </div>

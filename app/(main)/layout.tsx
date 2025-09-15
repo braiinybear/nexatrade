@@ -15,14 +15,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </aside>
 
         {/* Main content */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col lg:mb-14">
           {/* Add pb-16 on mobile to avoid overlap with bottom nav */}
           <main className="flex-1 pb-16 md:pb-0">{children}</main>
         </div>
       </div>
 
       {/* Bottom nav: fixed on mobile, hidden on desktop */}
-      <div className="">
+      <div className="mt-6">
         <div className="sticky bottom-0 left-0 w-full border-t bg-white z-50">
           <BottomNav />
         </div>
