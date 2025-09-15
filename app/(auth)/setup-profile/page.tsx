@@ -121,7 +121,7 @@ export default function SetupProfilePage() {
               value={accountType}
               onChange={(e) => setAccountType(e.target.value)}
             >
-              <option value="Demo">Demo</option>
+              <option value="Demo">Real</option>
               <option value="Real" disabled>
                 Real (disabled for now)
               </option>
