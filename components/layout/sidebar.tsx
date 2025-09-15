@@ -9,39 +9,50 @@ import {
   Rocket,
   X,
   Settings,
+  LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { db } from "@/lib/firebase";
 import { doc, onSnapshot } from "firebase/firestore";
 import { useAuth } from "@/lib/hooks/useAuth";
-import { DepositModal } from "@/components/deposit-modal"; // 👈 import modal
+import { DepositModal } from "@/components/deposit-modal";
 import { WithdrawModal } from "../withdraw-modal";
+import Image from "next/image";
 
-export function Sidebar({
-  desktop,
-  mobile,
-  open,
-  onClose,
-}: {
+// ✅ Define Profile type properly
+type Profile = {
+  name?: string;
+  email?: string;
+  photoURL?: string;
+  accountNumber?: string;
+  balance?: number;
+};
+
+// ✅ Define props types for Sidebar
+type SidebarProps = {
   desktop?: boolean;
   mobile?: boolean;
   open?: boolean;
   onClose?: () => void;
-}) {
-  const { user } = useAuth();
-  const [profile, setProfile] = useState<any>(null);
-  const [depositOpen, setDepositOpen] = useState(false); // 👈 state for modal
-  const [withdrawOpen, setWithdrawOpen] = useState(false); // 👈 state for modal
+};
 
-  // Fetch Firestore profile data
+export function Sidebar({ desktop, mobile, open, onClose }: SidebarProps) {
+  const { user } = useAuth();
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [depositOpen, setDepositOpen] = useState(false);
+  const [withdrawOpen, setWithdrawOpen] = useState(false);
+
+  // ✅ Fetch Firestore profile data safely
   useEffect(() => {
     if (!user) return;
-    const unsub = onSnapshot(doc(db, "users", user.uid), (snap) => {
+
+    const unsubscribe = onSnapshot(doc(db, "users", user.uid), (snap) => {
       if (snap.exists()) {
-        setProfile(snap.data());
+        setProfile(snap.data() as Profile);
       }
     });
-    return () => unsub();
+
+    return () => unsubscribe();
   }, [user]);
 
   const content = (
@@ -50,9 +61,11 @@ export function Sidebar({
       <div className="flex items-center justify-between p-4 border-b">
         <div className="flex items-center gap-3">
           {profile?.photoURL ? (
-            <img
+            <Image
               src={profile.photoURL}
               alt="avatar"
+              width={48}
+              height={48}
               className="h-12 w-12 rounded-full"
             />
           ) : (
@@ -70,7 +83,7 @@ export function Sidebar({
         <Settings className="h-5 w-5 text-gray-500" />
       </div>
 
-      {/* Octa Rewards Banner */}
+      {/* Nexa Rewards Banner */}
       <div className="m-4 rounded-lg border p-3 flex items-center justify-between">
         <div>
           <p className="font-medium text-sm">Nexa Trade</p>
@@ -91,7 +104,7 @@ export function Sidebar({
           <span className="text-gray-400">▼</span>
         </div>
         <p className="text-sm text-gray-700 mt-1">
-          Balance: ${profile?.balance?.toFixed(2) || "0.00"}
+          Balance: ${profile?.balance?.toFixed(2) ?? "0.00"}
         </p>
         <div className="flex gap-2 mt-3">
           <button className="flex-1 py-2 rounded-lg bg-gray-100 text-sm font-medium">
@@ -99,13 +112,13 @@ export function Sidebar({
           </button>
           <button
             className="flex-1 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium"
-            onClick={() => setDepositOpen(true)} // 👈 open modal
+            onClick={() => setDepositOpen(true)}
           >
             Deposit
           </button>
           <button
             className="flex-1 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium"
-            onClick={() => setWithdrawOpen(true)} // 👈 open modal
+            onClick={() => setWithdrawOpen(true)}
           >
             Withdraw
           </button>
@@ -132,7 +145,7 @@ export function Sidebar({
 
       <div className="flex-1" />
 
-      {/* Deposit Modal */}
+      {/* Modals */}
       <DepositModal open={depositOpen} onClose={() => setDepositOpen(false)} />
       <WithdrawModal open={withdrawOpen} onClose={() => setWithdrawOpen(false)} />
     </div>
@@ -172,17 +185,15 @@ export function Sidebar({
   return null;
 }
 
-function SidebarLink({
-  href,
-  icon: Icon,
-  label,
-  badge,
-}: {
+// ✅ Properly typed SidebarLink props
+type SidebarLinkProps = {
   href: string;
-  icon: any;
+  icon: LucideIcon;
   label: string;
   badge?: string;
-}) {
+};
+
+function SidebarLink({ href, icon: Icon, label, badge }: SidebarLinkProps) {
   return (
     <Link
       href={href}

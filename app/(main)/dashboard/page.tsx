@@ -8,23 +8,33 @@ import { useAuth } from "@/lib/hooks/useAuth";
 import { doc, onSnapshot } from "firebase/firestore";
 import Image from "next/image";
 
+// ✅ Define proper type for user profile
+type UserProfile = {
+  balance?: number;
+  currency?: string;
+  accountNumber?: string;
+  // Add other fields as needed
+};
+
 export default function DashboardPage() {
   const { user } = useAuth();
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
 
   useEffect(() => {
     if (!user) return;
+
     const unsub = onSnapshot(doc(db, "users", user.uid), (snap) => {
       if (snap.exists()) {
-        setProfile(snap.data());
+        setProfile(snap.data() as UserProfile);
       }
     });
+
     return () => unsub();
   }, [user]);
 
-  const balance = profile?.balance || 0;
-  const currency = profile?.currency || "USD";
-  const accountNumber = profile?.accountNumber || "------";
+  const balance = profile?.balance ?? 0;
+  const currency = profile?.currency ?? "USD";
+  const accountNumber = profile?.accountNumber ?? "------";
 
   // Currency symbol mapping
   const currencySymbols: Record<string, string> = {
@@ -39,8 +49,8 @@ export default function DashboardPage() {
     CNY: "¥",
     NZD: "NZ$",
     CHF: "Fr",
-    // Add more as needed
   };
+
   const currencySymbol = currencySymbols[currency] || "$";
 
   return (
@@ -58,39 +68,23 @@ export default function DashboardPage() {
 
         {/* ACTION BUTTONS */}
         <div className="flex justify-center gap-6 mt-6">
-          <div className="flex flex-col items-center">
-            <div className="bg-white text-blue-600 p-4 rounded-full shadow">
-              💳
-            </div>
-            <p className="text-sm mt-2">Deposit</p>
-          </div>
-
-          <div className="flex flex-col items-center">
-            <div className="bg-white text-blue-600 p-4 rounded-full shadow">
-              📈
-            </div>
-            <p className="text-sm mt-2">Trade</p>
-          </div>
-
-          <div className="flex flex-col items-center">
-            <div className="bg-white text-blue-600 p-4 rounded-full shadow">
-              💵
-            </div>
-            <p className="text-sm mt-2">Withdraw</p>
-          </div>
-
-          <div className="flex flex-col items-center">
-            <div className="bg-white text-blue-600 p-4 rounded-full shadow">
-              ⋯
-            </div>
-            <p className="text-sm mt-2">More</p>
-          </div>
+          {["💳 Deposit", "📈 Trade", "💵 Withdraw", "⋯ More"].map((action) => {
+            const [emoji, label] = action.split(" ");
+            return (
+              <div key={label} className="flex flex-col items-center">
+                <div className="bg-white text-blue-600 p-4 rounded-full shadow">
+                  {emoji}
+                </div>
+                <p className="text-sm mt-2">{label}</p>
+              </div>
+            );
+          })}
         </div>
       </div>
 
       {/* BODY CONTENT */}
       <div className="flex-1 space-y-4 p-4">
-        {/* OCTA REWARDS */}
+        {/* REWARDS CARD */}
         <Card>
           <CardContent className="p-4">
             <div className="flex justify-between items-center">
@@ -98,9 +92,20 @@ export default function DashboardPage() {
               <Button variant="outline" size="sm">My rewards</Button>
             </div>
             <div className="mt-4 bg-blue-100 p-4 rounded-xl">
-              <Image src={""} alt="image" className="w-40 h-40" />
+              {/* ❗ Replace with a real image path */}
 
+              <div className="w-full justify-center items-center flex">
               <p className="font-medium">Unlock your welcome cashback reward</p>
+              <div className="w-40 h-40 relative mb-2">
+                <Image
+                  src="/3d wallet.png"
+                  alt="Rewards image"
+                  layout="fill"
+                  objectFit="cover"
+                  className="rounded-lg"
+                />
+              </div>
+              </div>
               <Button className="mt-2 w-full bg-blue-600 text-white">Activate</Button>
             </div>
           </CardContent>
@@ -110,18 +115,17 @@ export default function DashboardPage() {
         <div>
           <h2 className="font-semibold mb-2">Top daily movers</h2>
           <div className="grid grid-cols-2 gap-4">
-            <Card>
-              <CardContent className="p-4 text-center">
-                <p className="font-medium">NAS100</p>
-                <p className="text-green-600">+0.47%</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4 text-center">
-                <p className="font-medium">NZDUSD</p>
-                <p className="text-red-600">-0.39%</p>
-              </CardContent>
-            </Card>
+            {[
+              { symbol: "NAS100", change: "+0.47%", up: true },
+              { symbol: "NZDUSD", change: "-0.39%", up: false },
+            ].map(({ symbol, change, up }) => (
+              <Card key={symbol}>
+                <CardContent className="p-4 text-center">
+                  <p className="font-medium">{symbol}</p>
+                  <p className={up ? "text-green-600" : "text-red-600"}>{change}</p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
 
@@ -130,18 +134,25 @@ export default function DashboardPage() {
           <h2 className="font-semibold mb-2">Space channels</h2>
           <Card>
             <CardContent className="p-4 space-y-2">
-              <div>
-                <p className="font-medium">GBPUSD chart patterns</p>
-                <p className="text-sm text-gray-600">GBPUSD formed the Triangle pattern</p>
-              </div>
-              <div>
-                <p className="font-medium">USDJPY chart patterns</p>
-                <p className="text-sm text-gray-600">USDJPY formed a bearish H&S pattern</p>
-              </div>
-              <div>
-                <p className="font-medium">ETHUSD support and resistance</p>
-                <p className="text-sm text-gray-600">ETHUSD is moving in the 4,280–4,800 range</p>
-              </div>
+              {[
+                {
+                  title: "GBPUSD chart patterns",
+                  desc: "GBPUSD formed the Triangle pattern",
+                },
+                {
+                  title: "USDJPY chart patterns",
+                  desc: "USDJPY formed a bearish H&S pattern",
+                },
+                {
+                  title: "ETHUSD support and resistance",
+                  desc: "ETHUSD is moving in the 4,280–4,800 range",
+                },
+              ].map((item, i) => (
+                <div key={i}>
+                  <p className="font-medium">{item.title}</p>
+                  <p className="text-sm text-gray-600">{item.desc}</p>
+                </div>
+              ))}
             </CardContent>
           </Card>
         </div>

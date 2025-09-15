@@ -8,6 +8,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
+import { FirebaseError } from "firebase/app"; // ✅ Import FirebaseError for proper typing
 import { auth } from "@/lib/firebase";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -15,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
 export default function LoginPage() {
-  const router = useRouter();
+  // ❌ Removed unused 'router'
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSignup, setIsSignup] = useState(false);
@@ -31,8 +32,10 @@ export default function LoginPage() {
       } else {
         await signInWithEmailAndPassword(auth, email, password);
       }
-    } catch (err: any) {
-      setError(err.message);
+      // Optional: Redirect user after login/signup using router.push('/dashboard')
+    } catch (err) {
+      const firebaseError = err as FirebaseError;
+      setError(firebaseError.message || "An error occurred.");
     } finally {
       setLoading(false);
     }
@@ -40,11 +43,13 @@ export default function LoginPage() {
 
   const handleGoogleLogin = async () => {
     setLoading(true);
+    setError("");
     try {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      const firebaseError = err as FirebaseError;
+      setError(firebaseError.message || "An error occurred.");
     } finally {
       setLoading(false);
     }
@@ -64,24 +69,38 @@ export default function LoginPage() {
 
         <CardContent className="space-y-4 p-6">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Email</label>
+            <label
+              htmlFor="email"
+              className="text-sm font-medium text-gray-700"
+            >
+              Email
+            </label>
             <Input
+              id="email"
               type="email"
               placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="h-12"
+              required
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Password</label>
+            <label
+              htmlFor="password"
+              className="text-sm font-medium text-gray-700"
+            >
+              Password
+            </label>
             <Input
+              id="password"
               type="password"
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="h-12"
+              required
             />
           </div>
 
@@ -106,6 +125,7 @@ export default function LoginPage() {
             variant="outline"
             className="w-full h-12 text-base font-medium"
             onClick={handleGoogleLogin}
+            disabled={loading}
           >
             Continue with Google
           </Button>
@@ -115,6 +135,7 @@ export default function LoginPage() {
             <button
               className="text-blue-600 font-medium hover:underline"
               onClick={() => setIsSignup(!isSignup)}
+              type="button"
             >
               {isSignup ? "Login" : "Sign Up"}
             </button>
