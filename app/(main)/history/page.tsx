@@ -118,7 +118,7 @@ export default function HistoryPage() {
                       )}
                     </span>
                     <div>
-                      <p className="font-semibold capitalize text-gray-800 text-sm sm:text-base">
+                      <p className="font-bold capitalize text-gray-800 text-sm sm:text-base">
                         {tx.type}
                       </p>
                       <p className="text-xs sm:text-sm text-gray-500">
