@@ -8,10 +8,13 @@ import { useAuth } from "@/lib/hooks/useAuth";
 import { doc, onSnapshot } from "firebase/firestore";
 import Image from "next/image";
 import {
-  CreditCard,
-  TrendingUp,
   Wallet,
+  TrendingUp,
+  Download,
   MoreHorizontal,
+  ChevronRight,
+  ArrowUp,
+  ArrowDown,
 } from "lucide-react";
 
 // ✅ Define proper type for user profile
@@ -60,75 +63,128 @@ export default function DashboardPage() {
   const currencySymbol = currencySymbols[currency] || "$";
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
-      {/* HEADER BALANCE SECTION */}
-      <div className="bg-blue-600 text-white p-6 rounded-b-3xl">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold flex items-center justify-center gap-2">
-            <span>{currencySymbol}</span>
-            <span>{balance.toFixed(2)}</span>
-            <span className="text-base font-normal text-blue-100">{currency}</span>
-          </h1>
-          <p className="mt-1 text-sm text-blue-100">Account #{accountNumber}</p>
-        </div>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      {/* BLUE HEADER WITH BALANCE & ACCOUNT INFO */}
+      <div className="bg-blue-600 text-white pt-20 pb-8 px-4">
+        <div className="max-w-md mx-auto">
+          {/* Account badges and account number */}
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <span className="text-xs font-bold bg-white/20 px-2 py-1 rounded-full">MT4</span>
+            <span className="text-xs font-bold bg-white/30 px-2 py-1 rounded-full">REAL</span>
+            <span className="text-xs text-blue-100">{accountNumber}</span>
+            <ChevronRight className="h-4 w-4 text-blue-100" />
+          </div>
 
-        {/* ACTION BUTTONS */}
-        <div className="flex justify-center gap-6 mt-6">
-          {[
-            { label: "Deposit", icon: CreditCard },
-            { label: "Trade", icon: TrendingUp },
-            { label: "Withdraw", icon: Wallet },
-            { label: "More", icon: MoreHorizontal },
-          ].map(({ label, icon: Icon }) => (
-            <div key={label} className="flex flex-col items-center">
-              <div className="bg-white text-blue-600 p-4 rounded-full shadow">
-                <Icon size={24} strokeWidth={2} />
-              </div>
-              <p className="text-sm mt-2">{label}</p>
+          {/* Large balance display */}
+          <div className="text-center mb-8">
+            <div className="text-6xl font-bold mb-2">
+              {currencySymbol}{balance.toFixed(2)}
             </div>
-          ))}
+          </div>
+
+          {/* Quick action buttons in circle */}
+          <div className="flex justify-center gap-6">
+            {[
+              { label: "Deposit", icon: Download },
+              { label: "Trade", icon: TrendingUp },
+              { label: "Withdraw", icon: Wallet },
+              { label: "More", icon: MoreHorizontal },
+            ].map(({ label, icon: Icon }) => (
+              <div key={label} className="flex flex-col items-center gap-2">
+                <button className="w-12 h-12 rounded-full border-2 border-white flex items-center justify-center hover:bg-white/10 transition">
+                  <Icon className="h-6 w-6 text-white" />
+                </button>
+                <span className="text-xs text-white text-center">{label}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* BODY CONTENT */}
-      <div className="flex-1 space-y-4 p-4">
-        {/* REWARDS CARD */}
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex justify-between items-center">
-              <Button variant="outline" size="sm">Challenges</Button>
-              <Button variant="outline" size="sm">My rewards</Button>
-            </div>
-            <div className="mt-4 bg-blue-100 p-4 rounded-xl">
-              <div className="w-full justify-center items-center flex">
-                <p className="font-medium">Unlock your welcome cashback reward</p>
-                <div className="w-40 h-40 relative mb-2">
-                  <Image
-                    src="/3d-wallet.png"
-                    alt="Rewards image"
-                    layout="fill"
-                    objectFit="cover"
-                    className="rounded-lg"
-                  />
+      {/* MAIN CONTENT */}
+      <div className="flex-1 px-4 py-4 space-y-4 max-w-md mx-auto w-full">
+        {/* REWARDS CAROUSEL */}
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold text-gray-800">Nexa Rewards</h3>
+            <ChevronRight className="h-4 w-4 text-gray-400" />
+          </div>
+          <div className="flex gap-3 overflow-x-auto pb-2">
+            {[
+              "You will never trade alone",
+              "Check your knowledge",
+              "1 ep.1 minute academy",
+              "1 ep.2 minute academy",
+            ].map((text, idx) => (
+              <div
+                key={idx}
+                className="flex-shrink-0 w-28 h-28 rounded-full border-4 border-blue-600 flex items-center justify-center bg-white shadow-sm"
+              >
+                <div className="w-24 h-24 rounded-full bg-blue-600 flex items-center justify-center p-2">
+                  <p className="text-xs font-semibold text-white text-center leading-tight">
+                    {text}
+                  </p>
                 </div>
               </div>
-              <Button className="mt-2 w-full bg-blue-600 text-white">Activate</Button>
-            </div>
-          </CardContent>
-        </Card>
+            ))}
+          </div>
+        </div>
+
+        {/* POPULAR DEPOSIT METHODS */}
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold text-gray-800">Popular deposit methods</h3>
+            <ChevronRight className="h-4 w-4 text-gray-400" />
+          </div>
+          <Card className="border-0 shadow-sm">
+            <CardContent className="p-4">
+              <div className="flex justify-around items-center">
+                {[
+                  { icon: "⚡", label: "India Netbanking" },
+                  { icon: "🔥", label: "UPI" },
+                  { icon: "⟂", label: "Tether (TRC20)" },
+                ].map((item, idx) => (
+                  <div key={idx} className="flex flex-col items-center gap-2">
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-2xl shadow-md">
+                      {item.icon}
+                    </div>
+                    <p className="text-xs text-center text-gray-700 font-medium">
+                      {item.label}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* TOP DAILY MOVERS */}
         <div>
-          <h2 className="font-semibold mb-2">Top daily movers</h2>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold text-gray-800">Top daily movers</h3>
+            <ChevronRight className="h-4 w-4 text-gray-400" />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
             {[
-              { symbol: "NAS100", change: "+0.47%", up: true },
-              { symbol: "NZDUSD", change: "-0.39%", up: false },
-            ].map(({ symbol, change, up }) => (
-              <Card key={symbol}>
-                <CardContent className="p-4 text-center">
-                  <p className="font-medium">{symbol}</p>
-                  <p className={up ? "text-green-600" : "text-red-600"}>{change}</p>
+              { symbol: "NZDUSD", change: 0.93, up: true, icon: "📊" },
+              { symbol: "ETHUSD", change: 1.68, up: false, icon: "📈" },
+            ].map((item) => (
+              <Card key={item.symbol} className="border-0 shadow-sm">
+                <CardContent className="p-4">
+                  <div className="flex flex-col items-center gap-3">
+                    <div className="text-3xl">{item.icon}</div>
+                    <p className="font-semibold text-gray-800">{item.symbol}</p>
+                    <div className="flex items-center gap-1">
+                      {item.up ? (
+                        <ArrowUp className="h-4 w-4 text-green-600" />
+                      ) : (
+                        <ArrowDown className="h-4 w-4 text-red-600" />
+                      )}
+                      <p className={item.up ? "text-green-600 font-bold" : "text-red-600 font-bold"}>
+                        {item.change.toFixed(2)}%
+                      </p>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             ))}
@@ -137,28 +193,22 @@ export default function DashboardPage() {
 
         {/* SPACE CHANNELS */}
         <div>
-          <h2 className="font-semibold mb-2">Space channels</h2>
-          <Card>
-            <CardContent className="p-4 space-y-2">
-              {[
-                {
-                  title: "GBPUSD chart patterns",
-                  desc: "GBPUSD formed the Triangle pattern",
-                },
-                {
-                  title: "USDJPY chart patterns",
-                  desc: "USDJPY formed a bearish H&S pattern",
-                },
-                {
-                  title: "ETHUSD support and resistance",
-                  desc: "ETHUSD is moving in the 4,280–4,800 range",
-                },
-              ].map((item, i) => (
-                <div key={i}>
-                  <p className="font-medium">{item.title}</p>
-                  <p className="text-sm text-gray-600">{item.desc}</p>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold text-gray-800">Space channels</h3>
+            <ChevronRight className="h-4 w-4 text-gray-400" />
+          </div>
+          <Card className="border-0 shadow-sm">
+            <CardContent className="p-4">
+              <div className="flex gap-3">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-white flex-shrink-0">
+                  📊
                 </div>
-              ))}
+                <div className="flex-1">
+                  <p className="font-semibold text-gray-800 text-sm">USDJPY chart patterns</p>
+                  <p className="text-xs text-gray-600">The mid-term outlook for USDJPY</p>
+                  <p className="text-xs text-gray-500 mt-1">14:29</p>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>

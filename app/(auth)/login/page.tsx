@@ -1,11 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
+  signInWithRedirect,
+  setPersistence,
+  browserLocalPersistence,
+  getRedirectResult,
 } from "firebase/auth";
 import { FirebaseError } from "firebase/app"; // ✅ Import FirebaseError for proper typing
 import { auth } from "@/lib/firebase";
@@ -45,14 +49,47 @@ export default function LoginPage() {
     setError("");
     try {
       const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
+      
+      // Set persistence FIRST — critical for mobile
+      await setPersistence(auth, browserLocalPersistence);
+      console.log("[LOGIN] Persistence set to local.");
+
+      // Detect mobile — use redirect flow which always works on mobile
+      const isMobile = /Android|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      console.log("[LOGIN] Is mobile:", isMobile);
+      
+      if (isMobile) {
+        console.log("[LOGIN] Using signInWithRedirect for mobile.");
+        await signInWithRedirect(auth, provider);
+      } else {
+        console.log("[LOGIN] Using signInWithPopup for desktop.");
+        await signInWithPopup(auth, provider);
+      }
     } catch (err) {
       const firebaseError = err as FirebaseError;
+      console.error("[LOGIN] Google auth error:", firebaseError.message);
       setError(firebaseError.message || "An error occurred.");
     } finally {
       setLoading(false);
     }
   };
+
+  // Handle redirect result from mobile OAuth flow
+  useEffect(() => {
+    const checkRedirect = async () => {
+      try {
+        const result = await getRedirectResult(auth);
+        if (result) {
+          console.log("[LOGIN] Redirect result received. User:", result.user.email);
+        } else {
+          console.log("[LOGIN] No redirect result.");
+        }
+      } catch (err) {
+        console.error("[LOGIN] getRedirectResult error:", err instanceof Error ? err.message : err);
+      }
+    };
+    checkRedirect();
+  }, []);
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-b from-blue-100 to-white">
