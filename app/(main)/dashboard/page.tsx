@@ -69,10 +69,10 @@ export default function DashboardPage() {
       <div className="bg-blue-600 text-white pt-20 pb-8 px-4 sticky top-0 z-10">
         <div className="w-full">
           {/* Account badges and account number */}
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <span className="text-xs font-bold bg-white/20 px-2 py-1 rounded-full">MT4</span>
-            <span className="text-xs font-bold bg-white/30 px-2 py-1 rounded-full">REAL</span>
-            <span className="text-xs text-blue-100">{accountNumber}</span>
+          <div className="flex items-center justify-center gap-3 mb-6 absolute top-0 right-0">
+            <span className="text-xs font-bold">MT<span className="text-[#e4a725]">4</span></span>
+            <span className="text-xs font-bold bg-blue-800 px-2 py-1 rounded-full">REAL</span>
+            <span className="text-[10px] text-blue-100">{accountNumber.split("#")[1]}</span>
             <ChevronRight className="h-4 w-4 text-blue-100" />
           </div>
 

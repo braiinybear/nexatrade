@@ -10,6 +10,7 @@ import {
   X,
   Settings,
   LucideIcon,
+  ChevronDown,
 } from "lucide-react";
 import Link from "next/link";
 import { db } from "@/lib/firebase";
@@ -100,40 +101,45 @@ export function Sidebar({ desktop, mobile, open, onClose }: SidebarProps) {
       </div>
 
       {/* Nexa Rewards Banner */}
-      <div className="m-4 rounded-lg border p-3 flex items-center justify-between">
+      <div className="m-4 
+  bg-gradient-to-r from-blue-500 via-purple-500 to-red-500
+p-[2px] rounded-2xl">
+      <div className="rounded-2xl border-0 p-3 flex items-center justify-between bg-white">
         <div>
-          <p className="font-medium text-sm">OctaFx</p>
-          <p className="text-xs text-gray-500">
+          <p className="font-medium text-sm">Octa Rewards</p>
+          <p className="text-[11px] text-gray-500">
             Trade. Earn XP. Unlock privileges.
           </p>
         </div>
-        <span className="text-xs font-semibold text-blue-600">NEW</span>
+        <span className="text-[10px] bg-blue-600 p-1 rounded-xl text-white">NEW</span>
       </div>
-
+</div>
       {/* Trading Account Card */}
-      <div className="mx-4 mb-4 p-4 border rounded-lg">
-        <p className="text-xs text-gray-500 mb-1">Trading account</p>
-        <div className="flex items-center justify-between">
-          <span className="font-semibold">
-            #{profile?.accountNumber || "------"}
-          </span>
-          <span className="text-gray-400">▼</span>
+      <div className="mx-4 mb-4 p-4  rounded-xl">
+        <div className="border p-4 rounded-lg relative flex flex-col justify-center z-60">
+          <p className="text-xs text-gray-600 mb-1 z-80 absolute top-[-10] bg-white p-1">Trading account</p>
+          <div className="flex items-center justify-between">
+            <span className="font-normal">
+              {profile?.accountNumber || "------"}
+            </span>
+            <span className="text-gray-400"><ChevronDown /> </span>
+          </div>
         </div>
-        <p className="text-sm text-gray-700 mt-1">
+        {/* <p className="text-sm text-gray-700 mt-1">
           Balance: {currencySymbols[profile?.currency ?? "USD"] || "$"}{profile?.balance?.toFixed(2) ?? "0.00"}
-        </p>
+        </p> */}
         <div className="flex gap-2 mt-3">
-          <button className="flex-1 py-2 rounded-lg bg-gray-100 text-sm font-medium">
+          <button className="flex-1 py-2 rounded-lg bg-blue-100 text-sm font-medium">
             Trade
           </button>
           <button
-            className="flex-1 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium"
+            className="flex-1 py-2 rounded-lg bg-blue-600 text-white text-xs font-medium"
             onClick={() => setDepositOpen(true)}
           >
             Deposit
           </button>
           <button
-            className="flex-1 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium"
+            className="flex-1 py-2 rounded-lg bg-blue-600 text-white text-xs font-medium"
             onClick={() => setWithdrawOpen(true)}
           >
             Withdraw
@@ -186,12 +192,6 @@ export function Sidebar({ desktop, mobile, open, onClose }: SidebarProps) {
             open ? "translate-x-0" : "-translate-x-full"
           )}
         >
-          <div className="flex items-center justify-between p-4 border-b">
-            <span className="font-semibold">Menu</span>
-            <button onClick={onClose}>
-              <X className="h-6 w-6 text-gray-600" />
-            </button>
-          </div>
           {content}
         </aside>
       </>
