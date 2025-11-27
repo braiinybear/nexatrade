@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LineChart,  Wallet, Briefcase, Rocket } from "lucide-react";
+import { LineChart, Wallet, Briefcase, Rocket } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const items = [
