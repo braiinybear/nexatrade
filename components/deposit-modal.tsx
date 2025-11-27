@@ -69,20 +69,21 @@ export function DepositModal({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Deposit Funds</DialogTitle>
+          <DialogTitle className="text-base sm:text-lg">Deposit Funds</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
+        <div className="space-y-3">
           <Input
             type="number"
             placeholder="Enter amount"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            min="1" // ✅ prevents typing negatives in most browsers
+            min="1"
+            className="text-sm sm:text-base h-10 sm:h-12"
           />
           <Button
-            className="w-full"
+            className="w-full text-sm sm:text-base h-10 sm:h-12"
             onClick={handleDeposit}
             disabled={loading}
           >

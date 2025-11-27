@@ -44,15 +44,15 @@ export default function HistoryPage() {
   }, [user]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex flex-col items-center justify-start px-2 py-2 sm:px-6 sm:py-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex flex-col items-center justify-start px-2 sm:px-6 py-3 sm:py-6">
       <div className="w-full max-w-md sm:max-w-xl mx-auto">
-        <h1 className="text-lg sm:text-2xl font-bold mb-4 sm:mb-6 text-blue-900 text-center tracking-tight">
+        <h1 className="text-lg sm:text-2xl font-bold mb-3 sm:mb-6 text-blue-900 text-center tracking-tight">
           Operation History
         </h1>
 
-        <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-2 sm:p-6 max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-transparent">
+        <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-3 sm:p-6 max-h-[70vh] sm:max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-transparent">
           {transactions.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12">
+            <div className="flex flex-col items-center justify-center py-8 sm:py-12">
               <svg
                 width="40"
                 height="40"
@@ -77,9 +77,9 @@ export default function HistoryPage() {
                   key={tx.id}
                   className="flex items-center justify-between bg-gray-50 hover:bg-blue-50 transition-colors border border-gray-200 shadow-sm p-2 sm:p-4 rounded-lg sm:rounded-xl w-full"
                 >
-                  <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="flex items-center gap-2 sm:gap-3 min-w-0">
                     <span
-                      className={`inline-flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full ${
+                      className={`inline-flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full flex-shrink-0 ${
                         tx.type === "deposit"
                           ? "bg-green-100 text-green-600"
                           : "bg-red-100 text-red-600"
@@ -87,8 +87,8 @@ export default function HistoryPage() {
                     >
                       {tx.type === "deposit" ? (
                         <svg
-                          width="20"
-                          height="20"
+                          width="18"
+                          height="18"
                           viewBox="0 0 24 24"
                           fill="none"
                           stroke="currentColor"
@@ -102,8 +102,8 @@ export default function HistoryPage() {
                         </svg>
                       ) : (
                         <svg
-                          width="20"
-                          height="20"
+                          width="18"
+                          height="18"
                           viewBox="0 0 24 24"
                           fill="none"
                           stroke="currentColor"
@@ -117,17 +117,17 @@ export default function HistoryPage() {
                         </svg>
                       )}
                     </span>
-                    <div>
-                      <p className="font-bold capitalize text-gray-800 text-sm sm:text-base">
+                    <div className="min-w-0">
+                      <p className="font-bold capitalize text-gray-800 text-xs sm:text-base truncate">
                         {tx.type}
                       </p>
-                      <p className="text-xs sm:text-sm text-gray-500">
+                      <p className="text-xs text-gray-500 truncate">
                         {tx.createdAt?.toDate().toLocaleString() || "Pending..."}
                       </p>
                     </div>
                   </div>
                   <span
-                    className={`text-base sm:text-lg font-bold ${
+                    className={`text-sm sm:text-lg font-bold flex-shrink-0 ml-2 ${
                       tx.type === "deposit" ? "text-green-600" : "text-red-600"
                     }`}
                   >

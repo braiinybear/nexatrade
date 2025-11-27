@@ -59,18 +59,19 @@ export function WithdrawModal({ open, onClose }: { open: boolean; onClose: () =>
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Withdraw Funds</DialogTitle>
+          <DialogTitle className="text-base sm:text-lg">Withdraw Funds</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
+        <div className="space-y-3">
           <Input
             type="number"
             placeholder="Enter amount"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
+            className="text-sm sm:text-base h-10 sm:h-12"
           />
-          <Button className="w-full" onClick={handleWithdraw} disabled={loading}>
+          <Button className="w-full text-sm sm:text-base h-10 sm:h-12" onClick={handleWithdraw} disabled={loading}>
             {loading ? "Processing..." : "Confirm Withdraw"}
           </Button>
         </div>
