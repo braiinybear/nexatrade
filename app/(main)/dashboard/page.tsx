@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 // import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { db } from "@/lib/firebase";
@@ -8,15 +8,16 @@ import { useAuth } from "@/lib/hooks/useAuth";
 import { doc, onSnapshot } from "firebase/firestore";
 // import Image from "next/image";
 import {
-  Wallet,
+  Banknote,
   TrendingUp,
-  Download,
-  MoreHorizontal,
+  CreditCard,
   ChevronRight,
   ArrowUp,
   ArrowDown,
+  Zap,
 } from "lucide-react";
 import Image from "next/image";
+import { UserInfoContext } from "@/context/UserInfoContext";
 
 // ✅ Define proper type for user profile
 type UserProfile = {
@@ -28,6 +29,7 @@ type UserProfile = {
 
 export default function DashboardPage() {
   const { user } = useAuth();
+  const { setUserInfo } = useContext(UserInfoContext);
   const [profile, setProfile] = useState<UserProfile | null>(null);
 
   useEffect(() => {
@@ -36,6 +38,7 @@ export default function DashboardPage() {
     const unsub = onSnapshot(doc(db, "users", user.uid), (snap) => {
       if (snap.exists()) {
         setProfile(snap.data() as UserProfile);
+        setUserInfo(snap.data());
       }
     });
 
@@ -44,7 +47,6 @@ export default function DashboardPage() {
 
   const balance = profile?.balance ?? 0;
   const currency = profile?.currency ?? "USD";
-  const accountNumber = profile?.accountNumber ?? "------";
 
   // Currency symbol mapping
   const currencySymbols: Record<string, string> = {
@@ -68,13 +70,7 @@ export default function DashboardPage() {
       {/* BLUE HEADER WITH BALANCE & ACCOUNT INFO */}
       <div className="bg-blue-600 text-white pt-20 pb-8 px-4 sticky top-0 z-10">
         <div className="w-full">
-          {/* Account badges and account number */}
-          <div className="flex items-center justify-center gap-3 mb-6 absolute top-0 right-0">
-            <span className="text-xs font-bold">MT<span className="text-[#e4a725]">4</span></span>
-            <span className="text-xs font-bold bg-blue-800 px-2 py-1 rounded-full">REAL</span>
-            <span className="text-[10px] text-blue-100">{accountNumber.split("#")[1]}</span>
-            <ChevronRight className="h-4 w-4 text-blue-100" />
-          </div>
+
 
           {/* Large balance display */}
           <div className="text-center mb-8">
@@ -86,9 +82,9 @@ export default function DashboardPage() {
           {/* Quick action buttons in circle */}
           <div className="flex justify-center gap-6 flex-wrap">
             {[
-              { label: "Deposit", icon: Download },
+              { label: "Deposit", icon: CreditCard },
               { label: "Trade", icon: TrendingUp },
-              { label: "Withdraw", icon: Wallet },
+              { label: "Withdraw", icon: Banknote },
               { label: "More", icon: ChevronRight },
             ].map(({ label, icon: Icon }) => (
               <div key={label} className="flex flex-col items-center gap-2">
@@ -111,20 +107,37 @@ export default function DashboardPage() {
             <ChevronRight className="h-4 w-4 text-gray-400" />
           </div>
           <div className="flex gap-3 overflow-x-auto pb-2 justify-between">
+             <div
+                className="flex-shrink-0 w-24 h-24 rounded-full border-4 border-blue-600 flex items-center justify-center bg-white shadow-sm"
+              >
+                <div className="w-20 h-20 rounded-full bg-blue-600 flex items-center justify-center p-2">
+                  <p className="text-xs font-semibold text-white text-center leading-tight">
+                    You will never trade alone
+                  </p>
+                </div>
+              </div>
             {[
-              "You will never trade alone",
-              "Check your knowledge",
-              "1 ep.1 minute academy",
-              "1 ep.2 minute academy",
+              // "Check your knowledge",
+              ["1", "ep.1", "minute academy"],
+              ["1", "ep.2", "minute", "minute academy"],
+              ["1", "ep.3", "minute", "minute academy"],
+              ["1", "ep.4", "minute", "minute academy"],
+              ["1", "ep.5", "minute", "minute academy"],
             ].map((text, idx) => (
               <div
                 key={idx}
-                className="flex-shrink-0 w-28 h-28 rounded-full border-4 border-blue-600 flex items-center justify-center bg-white shadow-sm"
+                className="flex-shrink-0 w-24 h-24 rounded-full border-4 border-blue-600 flex items-center justify-center bg-white shadow-sm"
               >
-                <div className="w-24 h-24 rounded-full bg-blue-600 flex items-center justify-center p-2">
-                  <p className="text-xs font-semibold text-white text-center leading-tight">
-                    {text}
-                  </p>
+                <div className="w-20 h-20 rounded-full bg-blue-600 flex items-center justify-center">
+                <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center p-2">
+                  <div className="text-[10px] font-bold  text-center leading-tight">
+                    <p className="flex gap-1 items-center justify-center">
+                      <span className="text-lg text-[#cc9a11] font-[900] "> {text[0]}</span>
+                       <span className="p-1 font-bold rounded-3xl bg-[#279c5c8c]">{text[1]}</span>
+                    </p>
+                    <p className="font-bold">{text[2]}</p>
+                  </div>
+                </div>
                 </div>
               </div>
             ))}
@@ -143,7 +156,8 @@ export default function DashboardPage() {
                 {/* India Netbanking with emoji */}
                 <div className="flex flex-col items-center gap-2 ">
                   <div className="w-16 h-16 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-2xl shadow-md">
-                    ⚡
+                    <Zap className="text-white fill-white" />
+
                   </div>
                   <p className="text-xs text-center text-gray-700 font-medium">
                     India Netbanking

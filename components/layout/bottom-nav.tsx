@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LineChart, Wallet, Briefcase, Rocket } from "lucide-react";
+import { LineChart, LayoutDashboard, Briefcase, Rocket } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const items = [
   { name: "Space", href: "/space", icon: Rocket },
   { name: "Trade", href: "/trade", icon: LineChart },
   { name: "Orders", href: "/orders", icon: Briefcase },
-  { name: "Dashboard", href: "/dashboard", icon: Wallet },
+  { name: "Dashboard", href: "/dashboard", icon:LayoutDashboard },
 ];
 
 export function BottomNav() {
@@ -30,7 +30,7 @@ export function BottomNav() {
             )}
             style={{ minWidth: 0 }}
           >
-            <Icon className="h-6 w-6 sm:h-7 sm:w-7 mb-0.5" />
+            <Icon className={`"h-6 w-6 sm:h-7 sm:w-7 mb-0.5" ${active ? "fill-blue-600" : "fill-transparent"}`} />
             <span className="truncate">{item.name}</span>
           </Link>
         );

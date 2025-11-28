@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { AuthProvider } from "@/context/AuthContext";
+import { UserInfoProvider } from "@/context/UserInfoContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,7 +21,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={cn(inter.className, "bg-gray-50")}>
         <AuthProvider>
-       {children}
+       <UserInfoProvider>
+        {children}
+       </UserInfoProvider>
         </AuthProvider>
       </body>
     </html>
