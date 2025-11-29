@@ -74,7 +74,7 @@ export default function DashboardPage() {
 
           {/* Large balance display */}
           <div className="text-center mb-8">
-            <div className="text-6xl font-bold mb-2">
+            <div className="text-3xl font-bold mb-2">
               {currencySymbol}{balance.toFixed(2)}
             </div>
           </div>
@@ -182,16 +182,17 @@ export default function DashboardPage() {
 
                 {/* Tether with image */}
                 <div className="flex flex-col items-center gap-2">
-                  <div className="w-16 h-16 rounded-full bg-[#35b335] flex items-center justify-center shadow-md overflow-hidden">
-                    <div className="rounded-[50%] bg-white border-0">
+                  <div className="w-16 h-16 rounded-full flex items-center justify-center shadow-md overflow-hidden">
+                    {/* <div className="rounded-[50%] bg-white border-0"> */}
                       <Image
                         src="/t-symb.png"
                         alt="Tether"
                         width={40}
                         height={40}
+                        className="w-full h-full"
                         priority
                       />
-                    </div>
+                    {/* </div> */}
                   </div>
                   <p className="text-xs text-center text-gray-700 font-medium">
                     Tether (TRC20)
