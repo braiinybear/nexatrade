@@ -173,10 +173,10 @@ export default function DashboardPage() {
       >
         {/* REWARDS CAROUSEL */}
         <div>
-          <div className="flex items-center justify-between mb-3">
+          {/* <div className="flex items-center justify-between mb-3">
             <h3 className="font-semibold text-gray-800">Rewards</h3>
             <ChevronRight className="h-4 w-4 text-gray-400" />
-          </div>
+          </div> */}
           <div className="flex gap-3 overflow-x-auto pb-2 justify-between">
              <div
                 className="flex-shrink-0 w-24 h-24 rounded-full border-4 border-blue-600 flex items-center justify-center bg-white shadow-sm"
