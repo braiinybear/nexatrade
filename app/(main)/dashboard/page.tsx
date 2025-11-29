@@ -126,10 +126,10 @@ export default function DashboardPage() {
         <div className="w-full">
 
           {/* Large balance display */}
-          <div className="text-center mb-8">
-            <div className="text-4xl font-bold mb-2">
+          <div className="text-center mb-8 overflow-x-auto w-scren">
+            <h2 className="text-4xl font-bold mb-2">
               {currencySymbol}{balance.toFixed(2)}
-            </div>
+            </h2>
           </div>
 
           {/* Quick action buttons in circle */}
