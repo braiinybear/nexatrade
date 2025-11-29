@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 // import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { db } from "@/lib/firebase";
@@ -31,6 +31,60 @@ export default function DashboardPage() {
   const { user } = useAuth();
   const { setUserInfo } = useContext(UserInfoContext);
   const [profile, setProfile] = useState<UserProfile | null>(null);
+
+  // Sliding overlay state: the absolute overlay will translate up by this amount
+  const overlayRef = useRef<HTMLDivElement | null>(null);
+  const innerRef = useRef<HTMLDivElement | null>(null);
+  const touchStartY = useRef<number | null>(null);
+  const [overlayOffset, setOverlayOffset] = useState(0);
+  const MAX_OVERLAY_OFFSET = 240; // px - maximum slide distance (matches header height)
+
+  // Wheel handler: while overlay isn't fully collapsed, consume wheel to move overlay.
+  const handleWheel = (e: React.WheelEvent) => {
+    const delta = e.deltaY;
+    if (delta > 0 && overlayOffset < MAX_OVERLAY_OFFSET) {
+      // scrolling down -> collapse overlay (move up)
+      e.preventDefault();
+      setOverlayOffset((v) => Math.min(v + delta, MAX_OVERLAY_OFFSET));
+      return;
+    }
+    if (delta < 0 && overlayOffset > 0) {
+      // scrolling up -> expand overlay (move down)
+      e.preventDefault();
+      setOverlayOffset((v) => Math.max(v + delta, 0));
+      return;
+    }
+    // otherwise allow inner scrolling when collapsed
+  };
+
+  // Touch handlers for mobile
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartY.current = e.touches[0]?.clientY ?? null;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    const start = touchStartY.current;
+    if (start == null) return;
+    const y = e.touches[0]?.clientY ?? 0;
+    const delta = start - y; // positive when swiping up
+
+    if (delta > 0 && overlayOffset < MAX_OVERLAY_OFFSET) {
+      e.preventDefault();
+      setOverlayOffset((v) => Math.min(v + delta, MAX_OVERLAY_OFFSET));
+      touchStartY.current = y;
+      return;
+    }
+    if (delta < 0 && overlayOffset > 0) {
+      e.preventDefault();
+      setOverlayOffset((v) => Math.max(v + delta, 0));
+      touchStartY.current = y;
+      return;
+    }
+  };
+
+  const handleTouchEnd = () => {
+    touchStartY.current = null;
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -66,15 +120,14 @@ export default function DashboardPage() {
   const currencySymbol = currencySymbols[currency] || "$";
 
   return (
-    <div className="bg-blue-600 flex flex-col min-h-screen overflow-hidden">
+    <div className="bg-blue-600 flex flex-col h-screen overflow-auto relative">
       {/* BLUE HEADER WITH BALANCE & ACCOUNT INFO */}
-      <div className="bg-blue-600 text-white pt-20 pb-8 px-4 sticky top-0 z-10">
+      <div className="bg-blue-600 text-white pt-20 pb-8 h-[16rem] px-4 top-0 z-10 flex flex-col items-center justify-center ">
         <div className="w-full">
-
 
           {/* Large balance display */}
           <div className="text-center mb-8">
-            <div className="text-3xl font-bold mb-2">
+            <div className="text-4xl font-bold mb-2">
               {currencySymbol}{balance.toFixed(2)}
             </div>
           </div>
@@ -98,8 +151,26 @@ export default function DashboardPage() {
         </div>
       </div>
 
+      <div
+        ref={overlayRef}
+        onWheel={handleWheel}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        className="absolute z-20 top-0 w-full"
+        style={{ transform: `translateY(-${overlayOffset}px)`, transition: "transform 180ms linear", touchAction: overlayOffset < MAX_OVERLAY_OFFSET ? 'none' : 'auto' }}
+      >
+        <div className="bg-transparent h-[16rem]">
+
+        </div>
+        {/* <div className="h-[20rem]"> */}
       {/* MAIN CONTENT */}
-      <div className="bg-gray-50 rounded-t-[30px] flex-1 px-4 py-4 space-y-4 w-full  overflow-y-auto sm:max-w-4xl sm:mx-auto">
+      <div
+        ref={innerRef}
+        className="bg-gray-50 rounded-t-[30px] flex-1 px-4 py-4 space-y-4 w-full sm:max-w-4xl sm:mx-auto"
+        // keep a small top padding so content doesn't hide under rounded edge when header collapsed
+        style={{ paddingTop: 8, overflowY: overlayOffset >= MAX_OVERLAY_OFFSET ? 'auto' : 'hidden' }}
+      >
         {/* REWARDS CAROUSEL */}
         <div>
           <div className="flex items-center justify-between mb-3">
@@ -257,7 +328,15 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         </div>
-      </div >
+      {/* </div > */}
+
+        </div>
+
+      </div>
+
+
+
+
     </div>
   );
 }

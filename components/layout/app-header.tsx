@@ -26,17 +26,18 @@ export function AppHeader({
       >
         <Menu className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
       </button>
-      <Image objectFit="cover" width={70} height={50} src={"https://octafx.my/wp-content/uploads/2024/07/octafx_logo_black.svg"} alt={title} className="h-auto w-auto max-w-[60px] sm:max-w-[80px]" />
+      <Image objectFit="cover" width={80} height={60} src={"https://octafx.my/wp-content/uploads/2024/07/octafx_logo_black.svg"} alt={title} className="h-auto w-auto max-w-[70px] sm:max-w-[90px]" />
 
          {/* Account badges and account number */}
           <div className="flex items-center justify-center gap-2 mb-6 absolute top-0 right-0 p-2">
             <span className="text-xs font-bold text-white">MT<span className="text-[#e4a725]">4</span></span>
             <span className="text-[11px] text-white bg-[#0841bb] px-2 py-1 rounded-full">REAL</span>
             <span className="text-[10px] text-blue-100">{accountNumber.split("#")[1]}</span>
+            <span className="text-[10px] text-white/80 absolute top-10 right-5 font-bold">Commission account</span>
             <div className="">
+
               <ChevronRight className="h-[14px] text-blue-100 rotate-[-90deg]" />
               <ChevronRight className="h-[14px] text-blue-100 rotate-90" />
-
             </div>
           </div>
 

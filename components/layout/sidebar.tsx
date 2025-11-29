@@ -92,6 +92,7 @@ export function Sidebar({ desktop, mobile, open, onClose }: SidebarProps) {
             <p className="font-semibold text-gray-800">
               {profile?.name || user?.displayName || "New User"}
             </p>
+            <p className="text-xs text-gray-400">Commission account</p>
             <p className="text-xs text-gray-500">
               {profile?.email || user?.email}
             </p>
